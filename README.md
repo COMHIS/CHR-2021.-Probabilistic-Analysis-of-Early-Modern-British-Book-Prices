@@ -1,2 +1,2 @@
 # CHR-2021. Probabilistic Modeling of Early Modern Book Prices
-The script produces the analyses of the article Probabilistic Modeling of Early Modern Book Prices, presented at the Computational Humanities Research 2021 conference. Unfortunately we can not share the data used. The script includes the production of figures, model fitting and evaluation and final preprocessing and filtering steps for the data.
+The script produces the analyses of the article Probabilistic Modeling of Early Modern Book Prices, presented at the Computational Humanities Research 2021 conference. Unfortunately we can not share the data used. The script includes the production of figures, model fitting and evaluation and final preprocessing and filtering steps of the data.
