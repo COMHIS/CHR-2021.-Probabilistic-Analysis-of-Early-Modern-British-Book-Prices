@@ -1,4 +1,4 @@
-#WHAT: This script produces the results of the CHR 2021 Short Paper Probabilistic Modeling of Early Modern Book Prices.
+#WHAT: This script produces the results of the CHR 2021 Short Paper Probabilistic Analysis of Early Modern British Book Prices.
 #Authors: Iiro Tiihonen, Mikko Tolonen, Leo Lahti.
 #Unfortunately the script requires data that can not be shared, but it gives an overview of the process.
 #For further information, contact iiro.tiihonen@helsinki.fi
@@ -68,7 +68,7 @@ generated quantities {
 
 
 #Read relevant columns of price index information. Only price_index_pence is used in this analysis.
-price_index <- readWorksheetFromFile("estc_price_analysis_chh/data/london.xlsx",sheet=1)[,c(1,117,119,121)]
+price_index <- readWorksheetFromFile(".../data/london.xlsx",sheet=1)[,c(1,117,119,121)]
 colnames(price_index) <- c("year","price_index_silver","price_index_silver_extended","price_index_pence")
 
 #Select the relevant rows of the price index and convert from factors to numbers.
@@ -81,17 +81,17 @@ price_index_lim$price_index_pence <- as.numeric(price_index_lim$price_index_penc
 #The word price is mentioned in other contexts in the 500a than in the declaration of the print prodcuts price. Thereofore we
 #made a table that only contains ids of print products for which the field 500a has a generic price declaration phrase
 #we will filter the prices with this table
-estc_price_reliable_ids <- read.csv("estc_book_prices/data_output/robust_prices.csv",stringsAsFactors = FALSE)
+estc_price_reliable_ids <- read.csv(".../data_output/robust_prices.csv",stringsAsFactors = FALSE)
 estc_price_reliable_ids$info <- NULL
 #We will filter prices related to advertisements,prospectuses and pilot guides out, as these were more often about the price of
 #something else than of the record itself (e.g about the price of the product being advertised)
-estc_prices_unreliable_ids <- read.csv("estc_book_prices/data_output/unreliable_prices.csv",stringsAsFactors = FALSE)
+estc_prices_unreliable_ids <- read.csv(".../data_output/unreliable_prices.csv",stringsAsFactors = FALSE)
 
 #We will also filter out public records and periodicals, as it was often unclear whether the price was related
 #to a single issue or part of the record or to the entirety of the record (both public records and periodicals are often coerced e.g. to annual collections)
-estc_public_records <- read.csv("estc_book_prices/data_output/public_print.csv",stringsAsFactors = FALSE)
+estc_public_records <- read.csv(".../data_output/public_print.csv",stringsAsFactors = FALSE)
 
-estc_periodicals <- read.csv("estc-data-unified/estc_subcollections/periodicals.csv",stringsAsFactors = FALSE)
+estc_periodicals <- read.csv(".../periodicals.csv",stringsAsFactors = FALSE)
 colnames(estc_periodicals) <- "system_control_number"
 
 
@@ -99,11 +99,11 @@ colnames(estc_periodicals) <- "system_control_number"
 #Correct some erroneous prices with handchecked prices (this sometimes led to marking NA as in some cases the price was not that of the record itself or there was a serious error in e.g the plate estimate of the print product)
 #Standardise variable names and formating between three handchecked files.
 
-estc_prices_handchecked_all <-  read.csv("estc_price_analysis_chh/data/prices_handchecked_unified.csv")
+estc_prices_handchecked_all <-  read.csv(".../data/prices_handchecked_unified.csv")
 estc_prices_handchecked_all$comment <- NULL
 
 #Join price data with price index data. And select only values without obvious parsing errors (prices above 0)
-estc_prices <- read.csv("estc-data-unified/estc-prices/estc_prices_extended.csv") %>% .[,c(1:8)] %>% left_join(.,price_index_lim) %>% subset(.,!is.na(total_price)) %>% subset(.,total_price>0)
+estc_prices <- read.csv(".../estc_prices_extended.csv") %>% .[,c(1:8)] %>% left_join(.,price_index_lim) %>% subset(.,!is.na(total_price)) %>% subset(.,total_price>0)
 colnames(estc_prices)[1] <- "system_control_number"
 
 estc_prices_ids <- estc_prices$system_control_number %>% as.data.frame(.) %>% name_data_frame(.,"system_control_number")
@@ -124,16 +124,16 @@ estc_prices$total_price <- as.integer(estc_prices$total_price)
 
 
 #Read in the relevant bibliographic data sets about physical characteristics of observations.
-estc_physical_extent <- read.csv("estc-data-unified/estc-physicalextent/physicalextent.csv",sep="\t")
+estc_physical_extent <- read.csv(".../physicalextent.csv",sep="\t")
 
-estc_physical_dimension <- read.csv("estc-data-unified/estc-physicaldimension/physical_dimension.csv",sep="\t")
+estc_physical_dimension <- read.csv(".../physical_dimension.csv",sep="\t")
 
 #set the sheet size used to normalise paper to sheets.
 
 sheet_size <- 5760
 
 #Read in the place information about our observations.
-estc_publication_place <- read.csv("estc-data-unified/estc-geoinformation/Estc752Mappings.csv")
+estc_publication_place <- read.csv(".../Estc752Mappings.csv")
 colnames(estc_publication_place)[1] <- "system_control_number"
 estc_publication_place$system_control_number <- paste0("(CU-RivES)",estc_publication_place$system_control_number)
 estc_publication_place <- estc_publication_place[,c("system_control_number","publication_place_752")]
